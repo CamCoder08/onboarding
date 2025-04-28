@@ -9,23 +9,37 @@ import UIKit
 import SnapKit
 
 class RegistrationViewController: UIViewController {
-
+    
+    private let RegisterationLabel = UILabel()
+    private let underlineView = UIView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureUI()
+    }
+    
+    private func configureUI() {
         view.backgroundColor = .white
-        // 등록 내역 화면 UI 구성 예정
+        
+        RegisterationLabel.text = "Registeration"
+        RegisterationLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        
+        [
+            RegisterationLabel,
+            underlineView
+        ].forEach { view.addSubview($0) }
+        
+        RegisterationLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(100)
+            $0.leading.equalToSuperview().offset(30)
+        }
+        
+        underlineView.backgroundColor = .black
+        underlineView.snp.makeConstraints {
+            $0.top.equalTo(RegisterationLabel.snp.bottom).offset(3)
+            $0.leading.equalTo(RegisterationLabel.snp.leading)
+            $0.trailing.equalTo(RegisterationLabel.snp.trailing)
+            $0.height.equalTo(1)
+        }
     }
 }
-
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
-
