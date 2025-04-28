@@ -26,11 +26,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		BCB1CE322DBF6C4C00214C20 /* Font */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Font;
-			sourceTree = "<group>";
-		};
 		BCC324012DBBC72C00D818AF /* onboarding */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -57,7 +52,6 @@
 		BCC323F62DBBC72C00D818AF = {
 			isa = PBXGroup;
 			children = (
-				BCB1CE322DBF6C4C00214C20 /* Font */,
 				BCC324012DBBC72C00D818AF /* onboarding */,
 				BCC324002DBBC72C00D818AF /* Products */,
 			);
@@ -87,7 +81,6 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				BCB1CE322DBF6C4C00214C20 /* Font */,
 				BCC324012DBBC72C00D818AF /* onboarding */,
 			);
 			name = onboarding;

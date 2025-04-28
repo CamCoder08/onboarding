@@ -20,7 +20,7 @@ class HomeViewController: UIViewController {
     private let adressInputField: UITextField = {
         let textField = UITextField()
         textField.textAlignment = .center
-        textField.backgroundColor = UIColor.darkGray.withAlphaComponent(0.3) // 한 번에 배경+알파
+        textField.backgroundColor = UIColor.darkGray.withAlphaComponent(0.3) // 한번에 배경+알파
         textField.layer.cornerRadius = 30
         textField.clipsToBounds = true
         textField.borderStyle = .roundedRect
@@ -30,43 +30,43 @@ class HomeViewController: UIViewController {
 
     private lazy var adressSearchButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(systemName: "magnifyingglass", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20)), for: .normal)
+        button.setImage(UIImage(systemName: "magnifyingglass", withConfiguration: UIImage.SymbolConfiguration(pointSize: 25)), for: .normal)
         button.tintColor = .white
         button.addTarget(self, action: #selector(didTapSearchButton), for: .touchUpInside)
-
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOpacity = 0.5
-        button.layer.shadowOffset = CGSize(width: 1, height: 3)
-        button.layer.shadowRadius = 5
         return button
     }()
 
-    // Todo: PNG 이미지파일 여백이 없어서 둥근 배경 적용불가.
+    private let moveToCurrentLocationBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.3) // 원하는 배경색
+        view.layer.cornerRadius = 25 // 동그라미 (width, height의 절반)
+        view.clipsToBounds = true
+        return view
+    }()
+
     private lazy var moveToCurrentLocationButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "moveToCurrentLocationButton")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.tintColor = UIColor.darkGray.withAlphaComponent(0.5)
+        let image = UIImage(named: "moveToCurrentLocationButton") // 그냥 원본 이미지
+        button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(didTapCurrentLocationButton), for: .touchUpInside)
-
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOpacity = 0.5
-        button.layer.shadowOffset = CGSize(width: 1, height: 3)
-        button.layer.shadowRadius = 5
         return button
     }()
+
+    private let registerModeToggleButtonBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.3) // 원하는 배경색
+        view.layer.cornerRadius = 25 // 동그라미 (width, height의 절반)
+        view.clipsToBounds = true
+        return view
+    }()
+
 
     private lazy var registerModeToggleButton: UIButton = {
         let button = UIButton()
         // 심볼을 포인트 크기 40으로 설정해서 버튼 이미지로 적용
-        button.setImage(UIImage(systemName: "pin.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 40)), for: .normal)
-        button.tintColor = .darkGray // 처음에는 다크그레이
-        button.alpha = 0.5 // 처음에는 반투명
+        button.setImage(UIImage(systemName: "pin.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 30)), for: .normal)
+        button.tintColor = .white
         button.addTarget(self, action: #selector(didTapRegisterModeToggleButton), for: .touchUpInside)
-
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOpacity = 0.5
-        button.layer.shadowOffset = CGSize(width: 1, height: 3)
-        button.layer.shadowRadius = 5
         return button
     }()
 
@@ -79,11 +79,6 @@ class HomeViewController: UIViewController {
         button.backgroundColor = UIColor.darkGray.withAlphaComponent(0.5)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         button.addTarget(self, action: #selector(didTapAddKickboardButton), for: .touchUpInside)
-
-//        button.layer.shadowColor = UIColor.black.cgColor
-//        button.layer.shadowOpacity = 0.5
-//        button.layer.shadowOffset = CGSize(width: 1, height: 3)
-//        button.layer.shadowRadius = 10
 
         // 숨김 여부 설정
         button.isHidden = true
@@ -101,7 +96,7 @@ class HomeViewController: UIViewController {
     }
 
     private func setupUI() {
-        [mapView, adressInputField, adressSearchButton, moveToCurrentLocationButton,
+        [mapView, adressInputField, adressSearchButton, moveToCurrentLocationBackgroundView, moveToCurrentLocationButton,registerModeToggleButtonBackgroundView,
          registerModeToggleButton, addKickboardButton].forEach { view.addSubview($0) }
 
         mapView.snp.makeConstraints { make in
@@ -123,13 +118,25 @@ class HomeViewController: UIViewController {
         }
 
         moveToCurrentLocationButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-30)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-120)
+            make.trailing.equalToSuperview().offset(-47)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-43)
+            make.width.height.equalTo(35)
+        }
+
+        moveToCurrentLocationBackgroundView.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-40)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-35)
             make.width.height.equalTo(50)
         }
 
         registerModeToggleButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-30)
+            make.trailing.equalToSuperview().offset(-40)
+            make.bottom.equalTo(moveToCurrentLocationButton.snp.top).offset(-15)
+            make.width.height.equalTo(50)
+        }
+
+        registerModeToggleButtonBackgroundView.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-40)
             make.bottom.equalTo(moveToCurrentLocationButton.snp.top).offset(-16)
             make.width.height.equalTo(50)
         }
@@ -159,12 +166,10 @@ class HomeViewController: UIViewController {
         if isRegisterModeOn {
             print("등록 모드 활성화")
             registerModeToggleButton.tintColor = .systemGreen
-            registerModeToggleButton.alpha = 0.5
             addKickboardButton.isHidden = false
         } else {
             print("등록 모드 비활성화")
-            registerModeToggleButton.tintColor = .darkGray
-            registerModeToggleButton.alpha = 0.5
+            registerModeToggleButton.tintColor = .white
             addKickboardButton.isHidden = true
         }
     }
