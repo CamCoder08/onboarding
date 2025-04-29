@@ -7,19 +7,31 @@
 
 import Foundation
 
-class UserManager {
-    static let shared = UserManager()
-
-    private init() {}
-
-    func saveUser(user: UserModel) {
-        // UserDefaults에 개별 속성 저장하는 코드 작성 예정
-    }
-
-    func loadUser(id: String) -> UserModel? {
-        // 저장된 사용자 불러오는 코드 작성 예정
-        return nil
-    }
+struct User {
+    let id: String
+    let password: String
+    let nickname: String
 }
 
-
+class UserManager {
+    static let shared = UserManager()
+    
+    private init() {}
+    
+    private(set) var userList: [User] = [
+        User(id: "testuser", password: "1234", nickname: "Tester")
+    ]
+    
+    func registerUser(id: String, password: String, nickname: String) {
+        let newUser = User(id: id, password: password, nickname: nickname)
+        userList.append(newUser)
+    }
+    
+    func isIDDuplicated(_ id: String) -> Bool {
+        return userList.contains { $0.id == id }
+    }
+    
+    func isNicknameDuplicated(_ nickname: String) -> Bool {
+        return userList.contains { $0.nickname == nickname }
+    }
+}
