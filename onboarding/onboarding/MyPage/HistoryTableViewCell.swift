@@ -9,16 +9,62 @@ import UIKit
 import SnapKit
 
 class HistoryTableViewCell: UITableViewCell {
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    
+    private let containerView = UIView()
+    private let codeLabel = UILabel()
+    private let dateLabel = UILabel()
+    private let priceLabel = UILabel()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        configureUI()
+        setupConstraints()
+        
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
+    
+    private func configureUI() {
+        
+        contentView.addSubview(containerView)
+        
+        [
+            codeLabel,
+            dateLabel,
+            priceLabel
+        ].forEach { containerView.addSubview($0) }
+        
+        containerView.backgroundColor = UIColor(hex: "#F6FAFF")
+        containerView.layer.cornerRadius = 20
+        containerView.clipsToBounds = true
+    }
+    
+    private func setupConstraints() {
+        
+        containerView.snp.makeConstraints {
+            $0.edges.equalToSuperview().inset(10)
+        }
+        
+        codeLabel.snp.makeConstraints {
+            $0.top.leading.equalToSuperview().offset(22)
+        }
+        
+        dateLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(29)
+            $0.trailing.equalToSuperview().offset(-20)
+        }
+        
+        priceLabel.snp.makeConstraints {
+            $0.top.equalTo(dateLabel.snp.bottom).offset(14)
+            $0.trailing.equalToSuperview().offset(-30)
+        }
+    }
+    
+    func configure(code: String, date: String, price: String) {
+        codeLabel.text = code
+        dateLabel.text = date
+        priceLabel.text = price
+    }
 }
