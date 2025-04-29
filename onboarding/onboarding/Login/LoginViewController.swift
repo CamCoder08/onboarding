@@ -12,7 +12,12 @@ class LoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .black
+        
+        let modalVC = RentModalViewController()
+        modalVC.modalPresentationStyle = .pageSheet
+        self.present(modalVC, animated: true)
+        
     }
 }
 
