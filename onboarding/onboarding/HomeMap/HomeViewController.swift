@@ -64,7 +64,7 @@ class HomeViewController: UIViewController {
     private lazy var registerModeToggleButton: UIButton = {
         let button = UIButton()
         // 심볼을 포인트 크기 40으로 설정해서 버튼 이미지로 적용
-        button.setImage(UIImage(systemName: "pin.circle", withConfiguration: UIImage.SymbolConfiguration(pointSize: 30)), for: .normal)
+        button.setImage(UIImage(systemName: "pin.slash", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20)), for: .normal)
         button.tintColor = .white
         button.addTarget(self, action: #selector(didTapRegisterModeToggleButton), for: .touchUpInside)
         return button
@@ -85,9 +85,8 @@ class HomeViewController: UIViewController {
 
         return button
     }()
+
     private var isRegisterModeOn: Bool = false
-
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -120,24 +119,24 @@ class HomeViewController: UIViewController {
         moveToCurrentLocationButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-47)
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-43)
-            make.width.height.equalTo(35)
+            make.width.height.equalTo(30)
         }
 
         moveToCurrentLocationBackgroundView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-40)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-35)
+            make.trailing.equalToSuperview().offset(-37.5)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-34)
             make.width.height.equalTo(50)
         }
 
         registerModeToggleButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-40)
-            make.bottom.equalTo(moveToCurrentLocationButton.snp.top).offset(-15)
+            make.trailing.equalToSuperview().offset(-36.5)
+            make.bottom.equalTo(moveToCurrentLocationButton.snp.top).offset(-20)
             make.width.height.equalTo(50)
         }
 
         registerModeToggleButtonBackgroundView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-40)
-            make.bottom.equalTo(moveToCurrentLocationButton.snp.top).offset(-16)
+            make.trailing.equalToSuperview().offset(-37.5)
+            make.bottom.equalTo(moveToCurrentLocationButton.snp.top).offset(-21)
             make.width.height.equalTo(50)
         }
 
@@ -151,28 +150,69 @@ class HomeViewController: UIViewController {
 
     // 검색 버튼 클릭 시 동작
     @objc private func didTapSearchButton() {
-        print("검색 버튼 클릭 - 주소 검색 기능 연결 예정")
+        // 1. 텍스트 필드 입력값 가져오기
+        guard let address = adressInputField.text, !address.isEmpty else {
+            showAlert(title: "입력 오류", message: "주소를 입력해주세요.")
+            return
+        }
+
+        // 2. AddressSearchAPIManager 통해 API 요청
+        AddressSearchAPIManager.shared.fetchCoordinate(address: address) { [weak self] coordinate in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+
+                if let coordinate = coordinate {
+                    // 3. 성공하면 지도 이동
+                    let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
+                    self.mapView.moveCamera(cameraUpdate)
+                } else {
+                    // 4. 실패하면 Alert
+                    self.showAlert(title: "검색 실패", message: "주소를 찾을 수 없습니다.")
+                }
+            }
+        }
     }
+
 
     // 현위치 이동 버튼 클릭 시 동작
     @objc private func didTapCurrentLocationButton() {
-        print("현위치 이동 버튼 클릭 - 고정 좌표 이동 기능 연결 예정")
+        let latitude: Double = 37.50238307905
+        let longitude: Double = 127.0445569933
+
+        let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: latitude, lng: longitude))
+        cameraUpdate.animation = .easeIn
+        mapView.moveCamera(cameraUpdate)
+
+        // 마커 추가
+        let marker = NMFMarker()
+        marker.position = NMGLatLng(lat: latitude, lng: longitude)
+        marker.iconImage = NMFOverlayImage(name: "spartaRogo") // 내 커스텀 이미지
+        marker.width = 60  // 크기 조정 가능
+        marker.height = 40
+        marker.mapView = mapView
     }
 
-    // 등록 버튼 클릭 시 동작
+
     @objc private func didTapRegisterModeToggleButton() {
         isRegisterModeOn.toggle()
 
         if isRegisterModeOn {
             print("등록 모드 활성화")
-            registerModeToggleButton.tintColor = .systemGreen
             addKickboardButton.isHidden = false
+
+            // 아이콘을 "pin"으로 변경
+            let image = UIImage(systemName: "pin", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
+            registerModeToggleButton.setImage(image, for: .normal)
         } else {
             print("등록 모드 비활성화")
-            registerModeToggleButton.tintColor = .white
             addKickboardButton.isHidden = true
+
+            // 아이콘을 "pin.slash"로 변경
+            let image = UIImage(systemName: "pin.slash", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
+            registerModeToggleButton.setImage(image, for: .normal)
         }
     }
+
 
     // Add 버튼 클릭 시 동작
     @objc private func didTapAddKickboardButton() {
