@@ -74,20 +74,20 @@ class RentModalViewController: UIViewController {
         userPayment.isHidden = true
 
         rentTitle.text = "onBoard"
-        rentTitle.font = UIFont(name: "NotoSansKR-Medium", size: 30)
+        rentTitle.font = UIFont(name: "NotoSansKR-Medium", size: 23)
         rentTitle.textColor = UIColor(red: 0.04, green: 0.04, blue: 0.04, alpha: 1.0)
         rentTitle.snp.makeConstraints() {
             $0.top.equalToSuperview().offset(40)
-            $0.leading.equalToSuperview().offset(142)
+            $0.leading.equalTo(boardImg.snp.trailing).offset(21)
             $0.trailing.equalToSuperview().offset(152)
         }
         
         boardNum.text = "No. 333018"
-        boardNum.font = UIFont(name: "NotoSansKR-Thin", size: 8)
+        boardNum.font = UIFont(name: "NotoSansKR-Thin", size: 11)
         boardNum.textColor = UIColor(red: 0.04, green: 0.04, blue: 0.04, alpha: 1.0)
         boardNum.snp.makeConstraints {
             $0.top.equalTo(rentTitle.snp.bottom).offset(1)
-            $0.leading.equalToSuperview().offset(142)
+            $0.leading.equalTo(boardImg.snp.trailing).offset(21)
             $0.trailing.equalToSuperview().offset(193)
         }
         
@@ -105,7 +105,7 @@ class RentModalViewController: UIViewController {
         batteryImg.snp.makeConstraints {
             //            $0.top.equalTo(boardNum.snp.bottom).offset(13)
             $0.bottom.equalTo(boardImg.snp.bottom).offset(3)
-            $0.leading.equalTo(boardImg.snp.trailing).offset(17)
+            $0.leading.equalTo(boardImg.snp.trailing).offset(19)
         }
         
         batteryPercent.text = "100%"
@@ -140,7 +140,6 @@ class RentModalViewController: UIViewController {
         unlockCharge.snp.makeConstraints {
             $0.top.equalTo(unlock.snp.bottom).offset(6)
             $0.centerX.equalTo(unlock.snp.centerX)
-//            $0.leading.equalTo(unlock.snp.leading)
         }
         
         
@@ -182,7 +181,7 @@ class RentModalViewController: UIViewController {
         runningTimeLabel.textColor = UIColor(red: 0.04, green: 0.04, blue: 0.04, alpha: 1.0)
         runningTimeLabel.font = UIFont(name: "NotoSansKR-Bold", size: 14)
         runningTimeLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(14)
+            $0.top.equalToSuperview().offset(20)
             $0.leading.equalToSuperview().offset(44)
         }
         
@@ -191,15 +190,15 @@ class RentModalViewController: UIViewController {
         userRunningTime.font = UIFont(name: "NotoSansKR-Regular", size: 14)
         userRunningTime.snp.makeConstraints {
             $0.top.equalTo(runningTimeLabel.snp.bottom).offset(6)
-            $0.leading.equalTo(runningTimeLabel.snp.leading)
+            $0.centerX.equalTo(runningTimeLabel.snp.centerX)
         }
         
         paymentLabel.text = "결제 금액"
         paymentLabel.textColor = UIColor(red: 0.04, green: 0.04, blue: 0.04, alpha: 1.0)
         paymentLabel.font = UIFont(name: "NotoSansKR-Bold", size: 14)
         paymentLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(14)
-            $0.trailing.equalToSuperview().inset(24)
+            $0.top.equalToSuperview().offset(20)
+            $0.trailing.equalToSuperview().inset(44)
         }
         
         userPayment.text = "2300원"
@@ -207,9 +206,8 @@ class RentModalViewController: UIViewController {
         userPayment.font = UIFont(name: "NotoSansKR-Regular", size: 14)
         userPayment.snp.makeConstraints {
             $0.top.equalTo(paymentLabel.snp.bottom).offset(6)
-            $0.leading.equalTo(paymentLabel.snp.leading)
+            $0.centerX.equalTo(paymentLabel.snp.centerX)
         }
-        
 
     }
     
@@ -222,19 +220,19 @@ class RentModalViewController: UIViewController {
 
     func updateUI(forRenting: Bool) {
         if forRenting {
-            // 대여 중 화면
-
+            
+            
             boardImg.image = UIImage(named: "대여중")
             rentTitle.text = "onBoarding ..."
             batteryPercent.text = "80%"
             
-            // 대여 전 요소 숨김
+            
             unlock.isHidden = true
             unlockCharge.isHidden = true
             perSecond.isHidden = true
             perSecondCharge.isHidden = true
             
-            // 대여 중 요소 표시
+            
             runningTimeLabel.isHidden = false
             userRunningTime.isHidden = false
             paymentLabel.isHidden = false
@@ -243,19 +241,18 @@ class RentModalViewController: UIViewController {
             rentalButton.setTitle("반납하기", for: .normal)
             
         } else {
-            // 대여 전 화면
-
+            
             boardImg.image = UIImage(named: "대여시작")
             rentTitle.text = "onBoard"
             batteryPercent.text = "100%"
             
-            // 대여 전 요소 표시
+            
             unlock.isHidden = false
             unlockCharge.isHidden = false
             perSecond.isHidden = false
             perSecondCharge.isHidden = false
             
-            // 대여 중 요소 숨김
+            
             runningTimeLabel.isHidden = true
             userRunningTime.isHidden = true
             paymentLabel.isHidden = true

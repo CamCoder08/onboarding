@@ -15,6 +15,7 @@ protocol RegisterModalViewControllerDelegate: AnyObject {
 class RegisterModalViewController: UIViewController {
     
     let textLabel = UILabel()
+    let deviceNumber = UILabel()
     let picker = UIPickerView()
     let confirm = UIButton()
     
@@ -59,13 +60,23 @@ class RegisterModalViewController: UIViewController {
         view.addSubview(textLabel)
         view.addSubview(picker)
         view.addSubview(confirm)
+        view.addSubview(deviceNumber)
         
         textLabel.text = "onBoard 등록"
-        textLabel.font = .systemFont(ofSize: 28)
+        textLabel.font = UIFont(name: "NotoSansKR-Bold", size: 28)
         textLabel.textColor = UIColor(red: 0.04, green: 0.04, blue: 0.04, alpha: 1.0)
         textLabel.textAlignment = .center
         textLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(21)
+            $0.centerX.equalToSuperview()
+        }
+        
+        deviceNumber.text = "Device No."
+        deviceNumber.textColor = UIColor(red: 0.04, green: 0.04, blue: 0.04, alpha: 1.0)
+        deviceNumber.font =  UIFont(name: "NotoSansKR-Light", size: 13)
+        deviceNumber.textAlignment = .center
+        deviceNumber.snp.makeConstraints {
+            $0.top.equalTo(textLabel.snp.bottom).offset(-10)
             $0.centerX.equalToSuperview()
         }
         
@@ -74,7 +85,7 @@ class RegisterModalViewController: UIViewController {
             $0.center.equalToSuperview()
             $0.top.equalTo(textLabel.snp.bottom)
             $0.bottom.equalTo(confirm.snp.top)
-//            $0.leading.trailing.equalToSuperview().inset(50)
+//          $0.leading.trailing.equalToSuperview().inset(50)
             $0.width.equalToSuperview().inset(60)
         }
         

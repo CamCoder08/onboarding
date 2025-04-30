@@ -7,10 +7,10 @@
 
 import Foundation
 
-//등록된 킥보드 정보를 UserDefaults에 저장하고 불러오는 기능 담당
-//등록하기 번튼을 누르먄 받은 정보를 킥보드 정보를 저장하고
-//지도에게 알려주기
-//세이브..
+// 등록된 킥보드 정보를 UserDefaults에 저장하고 불러오는 기능 담당
+// 등록하기 번튼을 누르먄 받은 정보를 킥보드 정보를 저장하고
+// 지도에게 알려주기
+// 세이브..
 class RegistrationManager {
     
     static let shared = RegistrationManager()
