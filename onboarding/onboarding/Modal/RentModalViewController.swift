@@ -10,22 +10,13 @@ import SnapKit
 
 class RentModalViewController: UIViewController {
 
+    var deviceId: String? // HomeViewController에서 전달 받는 기기코드
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        // 대여/반납 모달 UI 구성 예정
+
+        print("RentModal 열림 - 기기코드:", deviceId ?? "없음")
     }
 }
-
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
