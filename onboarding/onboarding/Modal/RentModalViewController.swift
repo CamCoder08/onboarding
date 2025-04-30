@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 
 class RentModalViewController: UIViewController {
+    var deviceId: String?
     
     let rentTitle = UILabel()
     let boardNum = UILabel()
