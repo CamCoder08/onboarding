@@ -14,7 +14,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
-        guard let windowScene = (scene as? UIWindowScene) else { return }
+        window.rootViewController = UINavigationController(rootViewController: MyPageViewController())
+        window.makeKeyAndVisible()
+
 
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = TabBarController() // 탭바 컨트롤러를 루트로 설정
