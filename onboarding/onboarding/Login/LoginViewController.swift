@@ -1,9 +1,17 @@
+////
+////  LoginViewController.swift
+////  onboarding
+////
+////  Created by ByonJoonYoung on 4/28/25.
+////
 //
+
 //  LoginViewController.swift
 //  onboarding
 //
 //  Created by ByonJoonYoung on 4/28/25.
 //
+
 import UIKit
 import SnapKit
 
@@ -64,9 +72,11 @@ class LoginViewController: UIViewController {
     }()
     
     // MARK: - 생명주기
+
     override func viewDidLoad() {
         
         super.viewDidLoad()
+
         view.backgroundColor = UIColor(red: 0.937, green: 0.525, blue: 0.729, alpha: 1.0) // #EF86BA
         
         // 회원가입 버튼 연결

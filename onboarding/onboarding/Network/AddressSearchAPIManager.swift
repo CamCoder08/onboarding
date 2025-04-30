@@ -6,21 +6,72 @@
 //
 
 import Foundation
+import CoreLocation
 
 class AddressSearchAPIManager {
-    static let shared = AddressSearchAPIManager()
 
+    static let shared = AddressSearchAPIManager()
     private init() {}
 
-    func searchAddress(keyword: String, completion: @escaping (Result<(Double, Double), Error>) -> Void) {
-        // 네이버 주소 검색 API를 호출하는 코드 작성 예정
+    // 주소(한글)를 받아서 위도/경도로 변환하는 함수
+    func fetchCoordinate(address: String, completion: @escaping (CLLocationCoordinate2D?) -> Void) {
+
+        // 기본 URL
+        let baseUrl = "https://maps.apigw.ntruss.com/map-geocode/v2/geocode"
+
+        // 네이버 콘솔에서 발급받은 Client ID / Secret
+        let clientId = "hio0xaude8"
+        let clientSecret = "lCt2RzzrYmvbh6BGS5jOGj97z83mMuD6v8i7CCjb"
+
+        // 한글 주소를 URL에 넣기 위해 인코딩
+        guard let encodedAddress = address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: "\(baseUrl)?query=\(encodedAddress)") else {
+            completion(nil)
+            return
+        }
+
+        // 요청(Request)
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue(clientId, forHTTPHeaderField: "X-NCP-APIGW-API-KEY-ID")
+        request.addValue(clientSecret, forHTTPHeaderField: "X-NCP-APIGW-API-KEY")
+
+        // URLSession으로 네트워크 통신
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+
+            guard let data = data, error == nil else {
+                print("네트워크 에러:", error ?? "알 수 없음")
+                completion(nil)
+                return
+            }
+
+            do {
+                let decoder = JSONDecoder()
+                let result = try decoder.decode(AddressSearchResponse.self, from: data)
+
+                if let first = result.addresses.first,
+                   let lat = Double(first.y),
+                   let lng = Double(first.x) {
+                    let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lng)
+                    completion(coordinate)
+                } else {
+                    completion(nil)
+                }
+            } catch {
+                print("디코딩 실패:", error)
+                completion(nil)
+            }
+        }
+        task.resume()
     }
 }
 
+// 네이버 Geocoding API 응답 모델
+struct AddressSearchResponse: Codable {
+    let addresses: [Address]
+}
 
-/*
- 이 파일은 네이버 지도 API를 이용해서 주소를 검색하고, 검색 결과를 위도/경도 좌표로 변환하는 역할을 합니다.
- HomeViewController에서 주소 검색 기능을 구현할 때 이 파일을 사용하게 됩니다.
- URLSession을 이용해서 직접 네트워크 통신을 하고 있습니다.
- 통신 실패 시 에러 처리를 꼭 함께 고려해서 작성할 예정입니다.
- */
+struct Address: Codable {
+    let x: String // 경도
+    let y: String // 위도
+}

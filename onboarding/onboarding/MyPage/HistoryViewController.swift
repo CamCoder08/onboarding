@@ -9,23 +9,71 @@ import UIKit
 import SnapKit
 
 class HistoryViewController: UIViewController {
-
+    
+    private let historyLabel = UILabel()
+    private let underlineView = UIView()
+    private let tableView = UITableView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureUI()
+        setupConstraints()
+    }
+    
+    private func configureUI() {
         view.backgroundColor = .white
-        // 대여 내역 화면 UI 구성 예정
+        
+        [
+            historyLabel,
+            underlineView,
+            tableView
+        ].forEach { view.addSubview($0) }
+        
+        historyLabel.text = "History"
+        historyLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        underlineView.backgroundColor = .black
+        
+        tableView.dataSource = self
+        tableView.register(HistoryTableViewCell.self, forCellReuseIdentifier: "HistoryCell")
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .white
+        tableView.rowHeight = 120
+
+    }
+    
+    private func setupConstraints() {
+        historyLabel.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(100)
+            $0.leading.equalToSuperview().offset(30)
+        }
+
+        underlineView.snp.makeConstraints {
+            $0.top.equalTo(historyLabel.snp.bottom).offset(3)
+            $0.leading.equalTo(historyLabel.snp.leading)
+            $0.trailing.equalTo(historyLabel.snp.trailing)
+            $0.height.equalTo(1)
+        }
+        
+        tableView.snp.makeConstraints {
+            $0.top.equalTo(underlineView.snp.bottom).offset(26)
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
     }
 }
 
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+extension HistoryViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10
     }
-    */
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath) as? HistoryTableViewCell else {
+            return UITableViewCell()
+        }
+        cell.configure(code: "{ 303030 }!", date: "2025.04.27 Sunday", price: "2300원")
+        return cell
+    }
+}
