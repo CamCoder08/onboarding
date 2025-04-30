@@ -13,14 +13,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        guard let windowScene = scene as? UIWindowScene else { return }
-        let window = UIWindow(windowScene: windowScene)
 
         window.rootViewController = UINavigationController(rootViewController: MyPageViewController())
         window.makeKeyAndVisible()
 
-        self.window = window
+
+        window = UIWindow(windowScene: windowScene)
+        window?.rootViewController = TabBarController() // 탭바 컨트롤러를 루트로 설정
+        window?.makeKeyAndVisible()
     }
+
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
