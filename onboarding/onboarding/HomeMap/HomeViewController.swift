@@ -11,6 +11,9 @@ import NMapsMap
 
 class HomeViewController: UIViewController {
 
+    private let mapService = MapService()
+    private var isRegisterModeOn: Bool = false
+
     // 네이버 지도
     private let mapView: NMFMapView = {
         let map = NMFMapView()
@@ -38,15 +41,15 @@ class HomeViewController: UIViewController {
 
     private let moveToCurrentLocationBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.3) // 원하는 배경색
-        view.layer.cornerRadius = 25 // 동그라미 (width, height의 절반)
+        view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.3)
+        view.layer.cornerRadius = 25
         view.clipsToBounds = true
         return view
     }()
 
     private lazy var moveToCurrentLocationButton: UIButton = {
         let button = UIButton()
-        let image = UIImage(named: "moveToCurrentLocationButton") // 그냥 원본 이미지
+        let image = UIImage(named: "moveToCurrentLocationButton")
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(didTapCurrentLocationButton), for: .touchUpInside)
         return button
@@ -54,8 +57,8 @@ class HomeViewController: UIViewController {
 
     private let registerModeToggleButtonBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.3) // 원하는 배경색
-        view.layer.cornerRadius = 25 // 동그라미 (width, height의 절반)
+        view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.3)
+        view.layer.cornerRadius = 25
         view.clipsToBounds = true
         return view
     }()
@@ -63,40 +66,62 @@ class HomeViewController: UIViewController {
 
     private lazy var registerModeToggleButton: UIButton = {
         let button = UIButton()
-        // 심볼을 포인트 크기 40으로 설정해서 버튼 이미지로 적용
         button.setImage(UIImage(systemName: "pin.slash", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20)), for: .normal)
         button.tintColor = .white
         button.addTarget(self, action: #selector(didTapRegisterModeToggleButton), for: .touchUpInside)
         return button
     }()
 
-    // Todo: 나중에 버튼이 매끄럽게 등장, 사라지는 애니메이션 구현
-    private lazy var addKickboardButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Add", for: .normal)
-        button.layer.cornerRadius = 25
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = UIColor.darkGray.withAlphaComponent(0.5)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        button.addTarget(self, action: #selector(didTapAddKickboardButton), for: .touchUpInside)
-
-        // 숨김 여부 설정
-        button.isHidden = true
-
-        return button
+    // 중앙 고정 핀 이미지
+    private let centerPinImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "pin.fill") // 나중에 커스텀
+        imageView.tintColor = .purple
+        imageView.contentMode = .scaleAspectFit
+        imageView.isHidden = true // 처음에는 숨겨놓기
+        return imageView
     }()
 
-    private var isRegisterModeOn: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupCenterPinTap()
+
+        // 앱 시작할 때 경복궁 좌표로 지도 이동
+        let seoulLatLng = NMGLatLng(lat: 37.579617, lng: 126.977041)
+        let cameraUpdate = NMFCameraUpdate(scrollTo: seoulLatLng)
+        cameraUpdate.animation = .none
+        mapView.moveCamera(cameraUpdate)
+
+        KickboardManager.shared.initializeDefaultKickboards()
+        let kickboards = KickboardManager.shared.loadKickboards()
+        print("불러온 킥보드 수:", kickboards.count)
+        mapService.addKickboardMarkers(kickboards, mapView: mapView) { [weak self] deviceId in
+                self?.presentRentModal(for: deviceId)
+            }
+
 
     }
 
+    private func presentRentModal(for deviceId: String) {
+        print("마커 클릭(대여UX) 기기코드: \(deviceId)")
+
+        let modal = RentModalViewController()
+        modal.deviceId = deviceId
+
+        if let sheet = modal.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+        }
+
+        present(modal, animated: true)
+    }
+
     private func setupUI() {
-        [mapView, adressInputField, adressSearchButton, moveToCurrentLocationBackgroundView, moveToCurrentLocationButton,registerModeToggleButtonBackgroundView,
-         registerModeToggleButton, addKickboardButton].forEach { view.addSubview($0) }
+        [mapView, adressInputField, adressSearchButton, moveToCurrentLocationBackgroundView,
+         moveToCurrentLocationButton,registerModeToggleButtonBackgroundView,
+         registerModeToggleButton, centerPinImageView].forEach { view.addSubview($0) }
 
         mapView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -140,33 +165,39 @@ class HomeViewController: UIViewController {
             make.width.height.equalTo(50)
         }
 
-        addKickboardButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview()
-            make.width.equalTo(70)
-            make.height.equalTo(50)
+        centerPinImageView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.height.equalTo(40) // 크기는 자유롭게 조절 가능
         }
     }
 
+    // 중앙 핀 터치했을 때 등록 모달 띄우기
+    private func setupCenterPinTap() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapCenterPin))
+        centerPinImageView.isUserInteractionEnabled = true
+        centerPinImageView.addGestureRecognizer(tapGesture)
+    }
+
+
     // 검색 버튼 클릭 시 동작
     @objc private func didTapSearchButton() {
-        // 1. 텍스트 필드 입력값 가져오기
+        // 텍스트 필드 입력값 가져오기
         guard let address = adressInputField.text, !address.isEmpty else {
             showAlert(title: "입력 오류", message: "주소를 입력해주세요.")
             return
         }
 
-        // 2. AddressSearchAPIManager 통해 API 요청
+        // AddressSearchAPIManager 통해 API 요청
         AddressSearchAPIManager.shared.fetchCoordinate(address: address) { [weak self] coordinate in
             DispatchQueue.main.async {
                 guard let self = self else { return }
 
                 if let coordinate = coordinate {
-                    // 3. 성공하면 지도 이동
+                    // 성공하면 지도 이동
                     let cameraUpdate = NMFCameraUpdate(scrollTo: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
                     self.mapView.moveCamera(cameraUpdate)
                 } else {
-                    // 4. 실패하면 Alert
+                    // 실패하면 Alert
                     self.showAlert(title: "검색 실패", message: "주소를 찾을 수 없습니다.")
                 }
             }
@@ -198,25 +229,38 @@ class HomeViewController: UIViewController {
 
         if isRegisterModeOn {
             print("등록 모드 활성화")
-            addKickboardButton.isHidden = false
 
-            // 아이콘을 "pin"으로 변경
             let image = UIImage(systemName: "pin", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
             registerModeToggleButton.setImage(image, for: .normal)
+
+            centerPinImageView.isHidden = false
+
         } else {
             print("등록 모드 비활성화")
-            addKickboardButton.isHidden = true
 
-            // 아이콘을 "pin.slash"로 변경
             let image = UIImage(systemName: "pin.slash", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
             registerModeToggleButton.setImage(image, for: .normal)
+
+            centerPinImageView.isHidden = true
         }
     }
 
+    @objc private func didTapCenterPin() {
+        print("중앙 핀 눌림 - 등록 모달 띄우기")
 
-    // Add 버튼 클릭 시 동작
-    @objc private func didTapAddKickboardButton() {
-        print("Add 버튼 클릭 - RegisterModal 띄우기 예정")
+        let centerCoordinate = mapView.cameraPosition.target
+        print("현재 지도 중앙 좌표:", centerCoordinate.lat, centerCoordinate.lng)
+
+        let registerModalVC = RegisterModalViewController()
+        if let sheet = registerModalVC.sheetPresentationController {
+            sheet.detents = [.custom(resolver: { _ in return 300 })]
+            sheet.prefersGrabberVisible = true
+        }
+
+        present(registerModalVC, animated: true)
     }
+
+
+
 
 }
