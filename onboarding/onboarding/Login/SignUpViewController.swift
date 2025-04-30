@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SnapKit
 //
 //  SignUpViewController.swift
 //  map
@@ -201,47 +200,47 @@ class SignUpViewController: UIViewController {
         stackView.setCustomSpacing(8, after: confirmPasswordLabel)
         stackView.setCustomSpacing(40, after: confirmPasswordTextField) // 마지막 필드 → 버튼
     }
-    // 커스텀 텍스트필드
-    class CustomTextField: UITextField {
-        init(placeholder: String, isSecure: Bool = false) {
-            super.init(frame: .zero)
-            self.placeholder = placeholder
-            self.isSecureTextEntry = isSecure
-            self.borderStyle = .none
-            self.translatesAutoresizingMaskIntoConstraints = false
-            
-            let underline = UIView()
-            underline.backgroundColor = .black
-            underline.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(underline)
-            
-            NSLayoutConstraint.activate([
-                underline.heightAnchor.constraint(equalToConstant: 1),
-                underline.leadingAnchor.constraint(equalTo: leadingAnchor),
-                underline.trailingAnchor.constraint(equalTo: trailingAnchor),
-                underline.bottomAnchor.constraint(equalTo: bottomAnchor)
-            ])
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-    }
+//    // 커스텀 텍스트필드
+//    class CustomTextField: UITextField {
+//        init(placeholder: String, isSecure: Bool = false) {
+//            super.init(frame: .zero)
+//            self.placeholder = placeholder
+//            self.isSecureTextEntry = isSecure
+//            self.borderStyle = .none
+//            self.translatesAutoresizingMaskIntoConstraints = false
+//            
+//            let underline = UIView()
+//            underline.backgroundColor = .black
+//            underline.translatesAutoresizingMaskIntoConstraints = false
+//            addSubview(underline)
+//            
+//            NSLayoutConstraint.activate([
+//                underline.heightAnchor.constraint(equalToConstant: 1),
+//                underline.leadingAnchor.constraint(equalTo: leadingAnchor),
+//                underline.trailingAnchor.constraint(equalTo: trailingAnchor),
+//                underline.bottomAnchor.constraint(equalTo: bottomAnchor)
+//            ])
+//        }
+//        
+//        required init?(coder: NSCoder) {
+//            fatalError("init(coder:) has not been implemented")
+//        }
+//    }
     
-    // 커스텀 라벨
-    class FormLabel: UILabel {
-        init(text: String) {
-            super.init(frame: .zero)
-            self.text = text
-            self.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-            self.textColor = .black
-            self.translatesAutoresizingMaskIntoConstraints = false
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-    }
+//    // 커스텀 라벨
+//    class FormLabel: UILabel {
+//        init(text: String) {
+//            super.init(frame: .zero)
+//            self.text = text
+//            self.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+//            self.textColor = .black
+//            self.translatesAutoresizingMaskIntoConstraints = false
+//        }
+//        
+//        required init?(coder: NSCoder) {
+//            fatalError("init(coder:) has not been implemented")
+//        }
+//    }
     @objc private func signUpButtonTapped() {
         guard let id = idTextField.text, !id.isEmpty,
               let nickname = nicknameTextField.text, !nickname.isEmpty,
@@ -273,7 +272,10 @@ class SignUpViewController: UIViewController {
         UserManager.shared.registerUser(id: id, password: password, nickname: nickname)
         
         // 회원가입 성공 알림
-        showAlert(title: "Success", message: "회원가입이 완료되었습니다.")
+        showAlert(title: "Success", message: "회원가입이 완료되었습니다.") { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+//        showAlert(title: "Success", message: "회원가입이 완료되었습니다.")
 
     }
 

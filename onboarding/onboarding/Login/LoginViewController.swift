@@ -143,19 +143,19 @@ class LoginViewController: UIViewController {
         let enteredPassword = passwordTextField.text ?? ""
         
         // 1. ID 존재 여부 확인
-        guard let user = UserManager.shared.userList.first(where: { $0.id == enteredID }) else {
+        guard let userModel = UserManager.shared.userList.first(where: { $0.id == enteredID }) else {
             showAlert(title: "Login Failed", message: "존재하지 않는 ID입니다.")
             return
         }
         
         // 2. Password 일치 여부 확인
-        guard user.password == enteredPassword else {
+        guard userModel.password == enteredPassword else {
             showAlert(title: "Login Failed", message: "비밀번호가 일치하지 않습니다.")
             return
         }
         
         // 3. 로그인 성공
-        showAlert(title: "Success", message: "Welcome, \(user.nickname)!")
+        showAlert(title: "Success", message: "Welcome, \(userModel.nickname)!")
     }
 
 
