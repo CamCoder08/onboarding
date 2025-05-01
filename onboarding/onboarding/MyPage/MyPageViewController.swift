@@ -106,7 +106,7 @@ class MyPageViewController: UIViewController {
         
         introduceLabel.snp.makeConstraints {
             $0.top.equalTo(logoImageView.snp.bottom).offset(44)
-            $0.leading.equalToSuperview().offset(35)
+            $0.leading.equalToSuperview().offset(32)
         }
         
         nicknameLable.snp.makeConstraints {
@@ -115,7 +115,7 @@ class MyPageViewController: UIViewController {
         }
         
         statusImageView.snp.makeConstraints {
-            $0.bottom.equalTo(nicknameLable.snp.bottom)
+            $0.bottom.equalTo(nicknameLable.snp.bottom).offset(4)
             $0.trailing.equalToSuperview().offset(-41)
             $0.width.equalTo(64)
             $0.height.equalTo(36)

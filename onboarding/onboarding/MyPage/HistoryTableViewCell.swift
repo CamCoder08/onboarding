@@ -27,19 +27,22 @@ class HistoryTableViewCell: UITableViewCell {
     }
     
     private func configureUI() {
-        
         contentView.addSubview(containerView)
+
         
-        [
-            codeLabel,
-            dateLabel,
-            priceLabel
-        ].forEach { containerView.addSubview($0) }
-        
+        containerView.addSubview(codeLabel)
+        containerView.addSubview(dateLabel)
+        containerView.addSubview(priceLabel)
+
+        codeLabel.font = UIFont(name: "NotoSansKR-Medium", size: 20)
+        dateLabel.font = UIFont(name: "NotoSansKR-Regular", size: 13)
+        priceLabel.font = UIFont(name: "NotoSansKR-Regular", size: 14)
+
         containerView.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 1, alpha: 1.0)
         containerView.layer.cornerRadius = 20
         containerView.clipsToBounds = true
     }
+
     
     private func setupConstraints() {
         
@@ -48,16 +51,16 @@ class HistoryTableViewCell: UITableViewCell {
         }
         
         codeLabel.snp.makeConstraints {
-            $0.top.leading.equalToSuperview().offset(22)
+            $0.top.leading.equalToSuperview().offset(12)
         }
         
         dateLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(29)
+            $0.bottom.equalTo(codeLabel.snp.bottom)
             $0.trailing.equalToSuperview().offset(-20)
         }
         
         priceLabel.snp.makeConstraints {
-            $0.top.equalTo(dateLabel.snp.bottom).offset(14)
+            $0.top.equalTo(dateLabel.snp.bottom).offset(20)
             $0.trailing.equalToSuperview().offset(-30)
         }
     }
