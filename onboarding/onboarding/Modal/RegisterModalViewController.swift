@@ -54,9 +54,14 @@ class RegisterModalViewController: UIViewController {
         
         picker.dataSource = self
         picker.delegate = self
-        
+
+
+
     }
-    
+
+
+
+
 
 
 
@@ -125,48 +130,51 @@ class RegisterModalViewController: UIViewController {
     
     @objc func confirmTapped() {
         guard let coordinate = coordinate else { return }
-
         guard !pickerList.isEmpty else {
-                showAlert(title: "오류", message: "더 이상 등록 가능한 킥보드가 없습니다.")
-                return
-            }
+            showAlert(title: "오류", message: "더 이상 등록 가능한 킥보드가 없습니다.")
+            return
+        }
 
         let selectedRow = picker.selectedRow(inComponent: 0)
         let selectedDevice = pickerList[selectedRow]
 
+        // 저장
         RegistrationManager.shared.saveRegisteredDeviceId(selectedDevice)
 
-        // 새 킥보드 생성
+        // 킥보드 저장
         let new = KickboardModel(
             deviceId: selectedDevice,
             latitude: coordinate.lat,
             longitude: coordinate.lng,
             battery: Int.random(in: 50...100)
         )
-
-        // 먼저 저장
         KickboardManager.shared.addKickboard(new)
 
-        // 저장된 후 전달
-        delegate?.didRegisterDevice(deviceId: selectedDevice)
-
-        // 주소와 날짜 저장
+        // 내역 업데이트
         AddressSearchAPIManager.shared.fetchAddress(latitude: coordinate.lat, longitude: coordinate.lng) { address in
             let dateString = DateFormatter.kickboardFormatWithTime.string(from: Date())
-            RegistrationManager.shared.saveDeviceInfo(
-                deviceId: selectedDevice,
-                address: address ?? "주소 불러오기 실패",
-                date: dateString
-            )
+            let location = address ?? "주소 불러오기 실패"
+
+            // 여기서 UserDefaults에 직접 저장
+            var list = UserDefaults.standard.array(forKey: "register_history") as? [[String: String]] ?? []
+            let newItem: [String: String] = ["code": selectedDevice, "date": dateString, "address": location]
+            list.append(newItem)
+            UserDefaults.standard.setValue(list, forKey: "register_history")
+
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .didRegisterKickboard, object: nil)
+
+                // 지도 반영 및 모달 닫기
+                self.delegate?.didRegisterDevice(deviceId: selectedDevice)
+                self.dismiss(animated: true)
+
+                self.pickerList.remove(at: selectedRow)
+                self.picker.reloadAllComponents()
+            }
+
         }
-
-        // 모달 닫기
-        dismiss(animated: true)
-
-        // 피커뷰에서 제거
-        pickerList.remove(at: selectedRow)
-        picker.reloadAllComponents()
     }
+
 
 
     
@@ -174,3 +182,6 @@ class RegisterModalViewController: UIViewController {
 }
 
 
+extension Notification.Name {
+    static let didRegisterKickboard = Notification.Name("didRegisterKickboard")
+}

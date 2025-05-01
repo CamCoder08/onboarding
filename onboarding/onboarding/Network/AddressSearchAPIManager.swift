@@ -20,8 +20,8 @@ class AddressSearchAPIManager {
         let baseUrl = "https://maps.apigw.ntruss.com/map-geocode/v2/geocode"
 
         // 네이버 콘솔에서 발급받은 Client ID / Secret
-        let clientId = "hio0xaude8"
-        let clientSecret = "lCt2RzzrYmvbh6BGS5jOGj97z83mMuD6v8i7CCjb"
+        let clientId = "3xbrvwl2jp"
+        let clientSecret = "hK23J2NlC95HNUaMScTT0AwFhsjLkqNzX8NR6yP5"
 
         // 한글 주소를 URL에 넣기 위해 인코딩
         guard let encodedAddress = address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
@@ -66,15 +66,17 @@ class AddressSearchAPIManager {
     }
 
     func fetchAddress(latitude: Double, longitude: Double, completion: @escaping (String?) -> Void) {
-        let baseUrl = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc"
+        let baseUrl = "https://maps.apigw.ntruss.com/map-reversegeocode/v2/gc"
 
-        let clientId = "hio0xaude8"
-        let clientSecret = "lCt2RzzrYmvbh6BGS5jOGj97z83mMuD6v8i7CCjb"
+        let clientId = "3xbrvwl2jp"
+        let clientSecret = "hK23J2NlC95HNUaMScTT0AwFhsjLkqNzX8NR6yP5"
 
         guard let url = URL(string: "\(baseUrl)?coords=\(longitude),\(latitude)&orders=roadaddr,addr&output=json") else {
+            print("URL 생성 실패")
             completion(nil)
             return
         }
+        print("주소 요청 URL: \(url.absoluteString)")
 
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -90,6 +92,7 @@ class AddressSearchAPIManager {
 
             do {
                 let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                print("주소 응답 결과 JSON:", json ?? [:])
                 if let results = (json?["results"] as? [[String: Any]])?.first,
                    let region = results["region"] as? [String: Any],
                    let area1 = region["area1"] as? [String: Any],

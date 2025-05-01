@@ -25,7 +25,12 @@ class TabBarController: UITabBarController {
 //        let brandViewController = BrandViewController()
         let myPageViewController = MyPageViewController()
 
-        homeViewController.tabBarItem = UITabBarItem(
+        // UINavigationController로 각각 감싸기
+        let homeNav = UINavigationController(rootViewController: homeViewController)
+        let myPageNav = UINavigationController(rootViewController: myPageViewController)
+
+
+        homeNav.tabBarItem = UITabBarItem(
             title: "Home",
             image: UIImage(systemName: "map"),
             selectedImage: UIImage(systemName: "map.fill")
@@ -37,13 +42,13 @@ class TabBarController: UITabBarController {
 //            selectedImage: UIImage(systemName: "scooter")
 //        )
 
-        myPageViewController.tabBarItem = UITabBarItem(
+        myPageNav.tabBarItem = UITabBarItem(
             title: "MyPage",
             image: UIImage(systemName: "person"),
             selectedImage: UIImage(systemName: "person.fill")
         )
 
-        viewControllers = [homeViewController, myPageViewController]
+        viewControllers = [homeNav, myPageNav]
     }
 }
 

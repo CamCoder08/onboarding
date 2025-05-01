@@ -259,7 +259,13 @@ class RentModalViewController: UIViewController {
             
         } else {
             if let id = deviceId {
+                let returnDate = DateFormatter.kickboardFormatWithTime.string(from: Date())
+                
                 delegate?.didReturnKickboard(deviceId: id)
+
+                let dateString = DateFormatter.kickboardFormatWithTime.string(from: Date())
+                let history = HistoryDisplayModel(deviceId: id, fee: "2,300원", returnTime: dateString)
+                HistoryDisplayManager.manager.save(history: history)
             }
 
             boardImg.image = UIImage(named: "대여시작")

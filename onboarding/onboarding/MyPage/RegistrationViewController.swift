@@ -8,8 +8,10 @@
 import UIKit
 import SnapKit
 
-class RegistrationViewController: UIViewController {
-    
+class RegistrationViewController: UIViewController, UITableViewDataSource {
+
+    var registrations: [[String: String]] = []
+
     private let registerLabel = UILabel()
     private let underlineView2 = UIView()
     private let tableView2 = UITableView()
@@ -20,8 +22,30 @@ class RegistrationViewController: UIViewController {
         view.backgroundColor = .white
         configureUI()
         setupConstraints()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(reloadData),
+            name: .didRegisterKickboard,
+            object: nil
+        )
     }
-    
+
+    @objc private func reloadData() {
+        registrations = UserDefaults.standard.array(forKey: "register_history") as? [[String: String]] ?? []
+        tableView2.reloadData()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        registrations = UserDefaults.standard.array(forKey: "register_history") as? [[String: String]] ?? []
+        tableView2.reloadData()
+    }
+
     private func configureUI() {
         view.backgroundColor = .white
         
@@ -42,7 +66,25 @@ class RegistrationViewController: UIViewController {
         tableView2.rowHeight = 120
 
     }
-    
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return registrations.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "RegisterCell", for: indexPath) as? RegistrationTableViewCell else {
+            return UITableViewCell()
+        }
+
+        let item = registrations[indexPath.row]
+        cell.configure(
+            code: item["code"] ?? "-",
+            date: item["date"] ?? "-",
+            address: item["address"] ?? "-"
+        )
+        return cell
+    }
+
     private func setupConstraints() {
         registerLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(100)
@@ -63,20 +105,20 @@ class RegistrationViewController: UIViewController {
         }
     }
 }
-
-extension RegistrationViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "RegisterCell", for: indexPath) as? RegistrationTableViewCell else {
-            return UITableViewCell()
-        }
-        cell.configure(code: "{ 303448 }!", date: "2025.04.38 Monday", address: "부산광역시 해운대구 좌동")
-        return cell
-    }
-}
+//
+//extension RegistrationViewController: UITableViewDataSource {
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return 3
+//    }
+//    
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//
+//        guard let cell = tableView.dequeueReusableCell(withIdentifier: "RegisterCell", for: indexPath) as? RegistrationTableViewCell else {
+//            return UITableViewCell()
+//        }
+//        cell.configure(code: "{ 303448 }!", date: "2025.04.38 Monday", address: "부산광역시 해운대구 좌동")
+//        return cell
+//    }
+//}
 
    

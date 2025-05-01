@@ -8,13 +8,15 @@
 import UIKit
 import SnapKit
 
-class HistoryViewController: UIViewController {
-    
+class HistoryViewController: UIViewController, UITableViewDataSource {
+
+    var histories: [HistoryDisplayModel] = []
+
     private let historyLabel = UILabel()
     private let underlineView = UIView()
     private let tableView = UITableView()
     
-    var histories:[HistoryDisplayModel] = []
+//    var histories:[HistoryDisplayModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +29,26 @@ class HistoryViewController: UIViewController {
         histories = HistoryDisplayManager.manager.display()
         tableView.reloadData()
     }
-    
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return histories.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath) as? HistoryTableViewCell else {
+            return UITableViewCell()
+        }
+
+        let item = histories[indexPath.row]
+        cell.configure(
+            code: histories[indexPath.row].deviceId,
+            date: histories[indexPath.row].returnTime,
+            price: histories[indexPath.row].fee
+        )
+
+        return cell
+    }
+
     
     private func configureUI() {
         view.backgroundColor = .white
@@ -71,18 +92,3 @@ class HistoryViewController: UIViewController {
     }
 }
 
-
-extension HistoryViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return histories.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath) as? HistoryTableViewCell else {
-            return UITableViewCell()
-        }
-        cell.configure(code: "{ 303030 }!", date: "2025.04.27 Sunday", price: "2300원")
-        return cell
-    }
-}
