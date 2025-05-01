@@ -17,7 +17,21 @@ class RegistrationManager {
     private init() {}
     
     private let registrationKey = "registrationList"
-    
+
+    private let registeredDeviceIdKey = "RegisteredDeviceIds"
+
+    func saveRegisteredDeviceId(_ deviceId: String) {
+        var savedIds = UserDefaults.standard.stringArray(forKey: registeredDeviceIdKey) ?? []
+        if savedIds.contains(deviceId) == false {
+            savedIds.append(deviceId)
+            UserDefaults.standard.set(savedIds, forKey: registeredDeviceIdKey)
+        }
+    }
+
+    func loadRegisteredDeviceIds() -> [String] {
+        return UserDefaults.standard.stringArray(forKey: registeredDeviceIdKey) ?? []
+    }
+
     func saveDeviceInfo(deviceId: String, address: String, date: String) {
         
         var registrations = loadRegistrations()
@@ -34,6 +48,13 @@ class RegistrationManager {
     
     func loadRegistrations() -> [[String: Any]] {
         return UserDefaults.standard.array(forKey: registrationKey) as? [[String: Any]] ?? []
+    }
+
+    func saveRegisteredKickboard(deviceId: String, latitude: Double, longitude: Double, battery: Int) {
+        var existing = KickboardManager.shared.loadKickboards()
+        let newKickboard = KickboardModel(deviceId: deviceId, latitude: latitude, longitude: longitude, battery: battery)
+        existing.append(newKickboard)
+        KickboardManager.shared.saveKickboards(existing)
     }
 
 }

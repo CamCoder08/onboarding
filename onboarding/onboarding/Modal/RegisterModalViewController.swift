@@ -7,28 +7,42 @@
 
 import UIKit
 import SnapKit
+import NMapsMap
 
 protocol RegisterModalViewControllerDelegate: AnyObject {
     func didRegisterDevice(deviceId: String)
 }
 
 class RegisterModalViewController: UIViewController {
-    
+
+    var coordinate: NMGLatLng?
+
     let textLabel = UILabel()
     let deviceNumber = UILabel()
     let picker = UIPickerView()
     let confirm = UIButton()
-    
+
+    var pickerList: [String] = []
+
     //피커뷰 내용물
-    let pickerList = [
-        "333098A", "333012A", "333287A", "333044F", "333567C",
-        "333484C", "333882B", "333765ED", "333211E", "333741F"
+
+    let allDevices = [
+        "444001A", "444002B", "444003C", "444004D", "444005E",
+        "444006F", "444007G", "444008H", "444009I", "444010J"
     ]
-    
+
+
+
     weak var delegate: RegisterModalViewControllerDelegate?
-    
+
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let registered = RegistrationManager.shared.loadRegisteredDeviceIds()
+        pickerList = allDevices.filter { !registered.contains($0) }
+
         view.backgroundColor = .white
         
         view.layer.cornerRadius = 30
@@ -43,15 +57,8 @@ class RegisterModalViewController: UIViewController {
         
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        if let sheet = self.sheetPresentationController {
-            sheet.detents = [.custom { _ in 348 }]
-            sheet.prefersGrabberVisible = true
-            sheet.preferredCornerRadius = 30
-        }
-    }
+
+
 
     
     
@@ -117,21 +124,53 @@ class RegisterModalViewController: UIViewController {
     //    모달을 닫는다 -> dismiss(animated: true) 사용
     
     @objc func confirmTapped() {
+        guard let coordinate = coordinate else { return }
+
+        guard !pickerList.isEmpty else {
+                showAlert(title: "오류", message: "더 이상 등록 가능한 킥보드가 없습니다.")
+                return
+            }
+
         let selectedRow = picker.selectedRow(inComponent: 0)
         let selectedDevice = pickerList[selectedRow]
-        
-        print("선택 기기: \(selectedDevice)")
-        
-        RegistrationManager.shared.saveDeviceInfo(
-            deviceId:selectedDevice,
-            address: "수원시 팔달구 행궁동",
-            date: "2025.04.27"
+
+        RegistrationManager.shared.saveRegisteredDeviceId(selectedDevice)
+
+        // 새 킥보드 생성
+        let new = KickboardModel(
+            deviceId: selectedDevice,
+            latitude: coordinate.lat,
+            longitude: coordinate.lng,
+            battery: Int.random(in: 50...100)
         )
-        
+
+        // 먼저 저장
+        KickboardManager.shared.addKickboard(new)
+
+        // 저장된 후 전달
         delegate?.didRegisterDevice(deviceId: selectedDevice)
-        
-        dismiss(animated: true, completion: nil)
+
+        // 주소와 날짜 저장
+        AddressSearchAPIManager.shared.fetchAddress(latitude: coordinate.lat, longitude: coordinate.lng) { address in
+            let dateString = DateFormatter.kickboardFormatWithTime.string(from: Date())
+            RegistrationManager.shared.saveDeviceInfo(
+                deviceId: selectedDevice,
+                address: address ?? "주소 불러오기 실패",
+                date: dateString
+            )
+        }
+
+        // 모달 닫기
+        dismiss(animated: true)
+
+        // 피커뷰에서 제거
+        pickerList.remove(at: selectedRow)
+        picker.reloadAllComponents()
     }
+
+
+    
+
 }
 
 

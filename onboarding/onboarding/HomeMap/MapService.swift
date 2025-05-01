@@ -16,7 +16,6 @@ class MapService {
         list.forEach { model in
             let marker = NMFMarker()
             marker.position = NMGLatLng(lat: model.latitude, lng: model.longitude)
-
             marker.mapView = mapView
 
             print("마커 추가됨:", model.deviceId, model.latitude, model.longitude) // 디버깅용
@@ -35,5 +34,14 @@ class MapService {
             }
         }
     }
+
+    // 특정 기기코드에 해당하는 마커를 지도에서 제거하는 함수
+    func removeMarker(for deviceId: String) {
+        if let marker = markerMap.first(where: { $0.value == deviceId })?.key {
+            marker.mapView = nil // 지도에서 제거
+            markerMap.removeValue(forKey: marker) // 내부 저장소에서도 제거
+        }
+    }
+
 }
 

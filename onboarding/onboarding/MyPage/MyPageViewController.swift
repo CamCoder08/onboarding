@@ -29,20 +29,25 @@ class MyPageViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let nickname = UserManager.shared.currentUser?.nickname {
+            nicknameLable.text = "Hi, \(nickname)님!"
+        }
+    }
+
     private func configureUI() {
         view.backgroundColor = UIColor(red: 0.96, green: 0.98, blue: 1, alpha: 1.0)
         
-        // 뷰에 노출
         [
             logoImageView,
             introduceLabel,
             nicknameLable,
             statusImageView,
-            scrollView,
+            scrollView
         ].forEach { view.addSubview($0) }
         
         scrollView.addSubview(stackView)
-        
         [
             historyButton,
             registerationButton,
@@ -50,14 +55,12 @@ class MyPageViewController: UIViewController {
             logoutButton
         ].forEach { stackView.addArrangedSubview($0) }
         
-        // UI 설정
         logoImageView.image = UIImage(named: "MypageLogo")
         logoImageView.contentMode = .scaleAspectFit
         
         introduceLabel.text = "onBoarding과 함께, 매일이 작은 여행이 됩니다"
         introduceLabel.font = UIFont.systemFont(ofSize: 12)
         
-        nicknameLable.text = "Hi, Suzie님!"
         nicknameLable.font = UIFont.boldSystemFont(ofSize: 35)
         
         statusImageView.image = UIImage(named: "현재 이용 상태")
@@ -90,10 +93,10 @@ class MyPageViewController: UIViewController {
         logoutButton.layer.borderColor = UIColor.black.cgColor
         logoutButton.layer.borderWidth = 0.5
         logoutButton.layer.cornerRadius = 10
+        logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
     }
     
     private func setupConstraints() {
-        
         logoImageView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(76)
             $0.leading.equalToSuperview().offset(31)
@@ -150,17 +153,25 @@ class MyPageViewController: UIViewController {
         }
     }
     
-    @objc func historyTapped() {
-        
+    @objc private func historyTapped() {
         let myHistory = HistoryViewController()
         self.navigationController?.pushViewController(myHistory, animated: true)
     }
     
-    @objc func registerTapped() {
-        
+    @objc private func registerTapped() {
         let myRegister = RegistrationViewController()
         self.navigationController?.pushViewController(myRegister, animated: true)
     }
-}
+    
+    @objc private func logoutTapped() {
+        UserManager.shared.logout()
 
+        let loginVC = UINavigationController(rootViewController: LoginViewController())
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            window.rootViewController = loginVC
+            window.makeKeyAndVisible()
+        }
+    }
+}
 

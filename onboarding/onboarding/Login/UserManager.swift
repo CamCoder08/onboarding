@@ -33,15 +33,21 @@ class UserManager {
     
     // 로그인
     func login(id: String, password: String) -> LoginResult {
+        loadUsers()
         guard let userModel = userList.first(where: { $0.id == id }) else {
             return .idNotFound
         }
         guard userModel.password == password else {
             return .wrongPassword
         }
+
         UserDefaults.standard.set(userModel.id, forKey: loggedInUserIDKey)
+        UserDefaults.standard.set(userModel.id, forKey: "LastLoginID")         // 추가
+        UserDefaults.standard.set(userModel.password, forKey: "LastLoginPassword") // 추가
+
         return .success(userModel)
     }
+
     
     // 로그아웃
     func logout() {

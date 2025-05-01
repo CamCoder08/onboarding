@@ -84,7 +84,17 @@ class LoginViewController: UIViewController {
             
         // 로그인 버튼 연결
         loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
-        
+
+        if let user = UserManager.shared.currentUser {
+            idTextField.text = user.id
+            passwordTextField.text = user.password
+        }
+
+        // 로그인 입력값 자동 입력
+        idTextField.text = UserDefaults.standard.string(forKey: "LastLoginID")
+        passwordTextField.text = UserDefaults.standard.string(forKey: "LastLoginPassword")
+
+
         setupLayout()
     }
     
@@ -151,22 +161,36 @@ class LoginViewController: UIViewController {
     @objc private func loginButtonTapped() {
         let enteredID = idTextField.text ?? ""
         let enteredPassword = passwordTextField.text ?? ""
-        
-        // 1. ID 존재 여부 확인
-        guard let userModel = UserManager.shared.userList.first(where: { $0.id == enteredID }) else {
+
+        switch UserManager.shared.login(id: enteredID, password: enteredPassword) {
+        case .idNotFound:
             showAlert(title: "Login Failed", message: "존재하지 않는 ID입니다.")
-            return
-        }
-        
-        // 2. Password 일치 여부 확인
-        guard userModel.password == enteredPassword else {
+        case .wrongPassword:
             showAlert(title: "Login Failed", message: "비밀번호가 일치하지 않습니다.")
-            return
+        case .success(let user):
+            showAlert(title: "Success", message: "Welcome, \(user.nickname)!") { [weak self] in
+                // 탭바 컨트롤러로 루트 변경
+                let tabBarController = TabBarController()
+                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = scene.windows.first {
+                    window.rootViewController = tabBarController
+                    window.makeKeyAndVisible()
+                }
+            }
         }
-        
-        // 3. 로그인 성공
-        showAlert(title: "Success", message: "Welcome, \(userModel.nickname)!")
     }
+
+
+    private func switchToMainApp() {
+        let sceneDelegate = UIApplication.shared.connectedScenes
+            .first?.delegate as? SceneDelegate
+
+        let tabBarController = TabBarController()
+        sceneDelegate?.window?.rootViewController = tabBarController
+        sceneDelegate?.window?.makeKeyAndVisible()
+    }
+
+
 
 
 

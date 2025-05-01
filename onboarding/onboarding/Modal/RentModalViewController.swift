@@ -8,7 +8,16 @@
 import UIKit
 import SnapKit
 
+protocol RentModalDelegate: AnyObject {
+    func didRentKickboard(deviceId: String)
+    func didReturnKickboard(deviceId: String)
+}
+
 class RentModalViewController: UIViewController {
+
+    weak var delegate: RentModalDelegate?
+    
+
     var deviceId: String?
     
     let rentTitle = UILabel()
@@ -42,14 +51,18 @@ class RentModalViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
+        if let deviceId = deviceId {
+            boardNum.text = "No. \(deviceId)"
+        }
+
         if let sheet = self.sheetPresentationController {
             sheet.detents = [.custom { _ in 318 }]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 30
         }
-        
     }
+
     
     private func rentalUI() {
         
@@ -221,7 +234,10 @@ class RentModalViewController: UIViewController {
 
     func updateUI(forRenting: Bool) {
         if forRenting {
-            
+            if let id = deviceId {
+                delegate?.didRentKickboard(deviceId: id)
+            }
+
             
             boardImg.image = UIImage(named: "대여중")
             rentTitle.text = "onBoarding ..."
@@ -242,7 +258,10 @@ class RentModalViewController: UIViewController {
             rentalButton.setTitle("반납하기", for: .normal)
             
         } else {
-            
+            if let id = deviceId {
+                delegate?.didReturnKickboard(deviceId: id)
+            }
+
             boardImg.image = UIImage(named: "대여시작")
             rentTitle.text = "onBoard"
             batteryPercent.text = "100%"
@@ -260,6 +279,7 @@ class RentModalViewController: UIViewController {
             userPayment.isHidden = true
             
             rentalButton.setTitle("대여하기", for: .normal)
+            dismiss(animated: true, completion: nil)
         }
     }
 
