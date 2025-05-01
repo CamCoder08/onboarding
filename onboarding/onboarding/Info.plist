@@ -2,9 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>Fonts provided by application
-Fonts provided by application
-</key>
+	<key>UIAppFonts</key>
 	<array>
 		<string>NotoSansKR-Black.ttf</string>
 		<string>NotoSansKR-Bold.ttf</string>
@@ -34,6 +32,8 @@ Fonts provided by application
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
+		<key>UIApplicationSupportsTabbedSceneCollection</key>
+		<false/>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 		<key>UISceneConfigurations</key>

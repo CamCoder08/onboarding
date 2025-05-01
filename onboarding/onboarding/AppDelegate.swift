@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        NMFAuthManager.shared().ncpKeyId = "hio0xaude8"
+        NMFAuthManager.shared().ncpKeyId = "3xbrvwl2jp"
         return true
     }
 
