@@ -64,6 +64,51 @@ class AddressSearchAPIManager {
         }
         task.resume()
     }
+
+    func fetchAddress(latitude: Double, longitude: Double, completion: @escaping (String?) -> Void) {
+        let baseUrl = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc"
+
+        let clientId = "hio0xaude8"
+        let clientSecret = "lCt2RzzrYmvbh6BGS5jOGj97z83mMuD6v8i7CCjb"
+
+        guard let url = URL(string: "\(baseUrl)?coords=\(longitude),\(latitude)&orders=roadaddr,addr&output=json") else {
+            completion(nil)
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue(clientId, forHTTPHeaderField: "X-NCP-APIGW-API-KEY-ID")
+        request.addValue(clientSecret, forHTTPHeaderField: "X-NCP-APIGW-API-KEY")
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                print("주소 변환 네트워크 에러:", error ?? "알 수 없음")
+                completion(nil)
+                return
+            }
+
+            do {
+                let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                if let results = (json?["results"] as? [[String: Any]])?.first,
+                   let region = results["region"] as? [String: Any],
+                   let area1 = region["area1"] as? [String: Any],
+                   let area2 = region["area2"] as? [String: Any],
+                   let area3 = region["area3"] as? [String: Any] {
+
+                    let fullAddress = "\(area1["name"] ?? "") \(area2["name"] ?? "") \(area3["name"] ?? "")"
+                    completion(fullAddress)
+                } else {
+                    completion(nil)
+                }
+            } catch {
+                print("주소 디코딩 실패:", error)
+                completion(nil)
+            }
+        }
+        task.resume()
+    }
+
 }
 
 // 네이버 Geocoding API 응답 모델

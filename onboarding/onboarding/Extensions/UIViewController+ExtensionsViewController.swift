@@ -11,9 +11,9 @@ import UIKit
 extension UIViewController {
 
     // 제목과 메시지를 받아서 간단한 Alert를 띄워주는 함수
-    func showAlert(title: String, message: String) {
+    func showAlert(title: String, message: String, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in completion?()})
         present(alert, animated: true)
     }
 

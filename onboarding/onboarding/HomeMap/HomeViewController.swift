@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import NMapsMap
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController, RegisterModalViewControllerDelegate {
 
     private let mapService = MapService()
     private var isRegisterModeOn: Bool = false
@@ -109,6 +109,7 @@ class HomeViewController: UIViewController {
 
         let modal = RentModalViewController()
         modal.deviceId = deviceId
+        modal.delegate = self
 
         if let sheet = modal.sheetPresentationController {
             sheet.detents = [.medium()]
@@ -178,6 +179,31 @@ class HomeViewController: UIViewController {
         centerPinImageView.addGestureRecognizer(tapGesture)
     }
 
+    func didRegisterDevice(deviceId: String) {
+        print("HomeViewController에서 등록된 기기코드 받음: \(deviceId)")
+
+        // 등록모드 종료 (등록핀 사라짐 + 버튼 아이콘 원상복구)
+        isRegisterModeOn = false
+        let image = UIImage(systemName: "pin.slash", withConfiguration: UIImage.SymbolConfiguration(pointSize: 20))
+        registerModeToggleButton.setImage(image, for: .normal)
+        centerPinImageView.isHidden = true
+
+        // 마커 추가
+        let kickboards = KickboardManager.shared.loadKickboards()
+        guard let target = kickboards.first(where: { $0.deviceId == deviceId }) else {
+            print("해당 deviceId에 해당하는 킥보드 정보를 찾을 수 없습니다.")
+            return
+        }
+
+        DispatchQueue.main.async { [weak self] in
+            self?.mapService.addKickboardMarkers([target], mapView: self!.mapView) { id in
+                self?.presentRentModal(for: id)
+            }
+        }
+    }
+
+
+
 
     // 검색 버튼 클릭 시 동작
     @objc private func didTapSearchButton() {
@@ -246,12 +272,17 @@ class HomeViewController: UIViewController {
     }
 
     @objc private func didTapCenterPin() {
-        print("중앙 핀 눌림 - 등록 모달 띄우기")
 
         let centerCoordinate = mapView.cameraPosition.target
-        print("현재 지도 중앙 좌표:", centerCoordinate.lat, centerCoordinate.lng)
+        print("등록 시 좌표:", centerCoordinate.lat, centerCoordinate.lng)
 
         let registerModalVC = RegisterModalViewController()
+
+        registerModalVC.coordinate = centerCoordinate // 좌표 전달
+        registerModalVC.delegate = self
+
+
+
         if let sheet = registerModalVC.sheetPresentationController {
             sheet.detents = [.custom(resolver: { _ in return 300 })]
             sheet.prefersGrabberVisible = true
@@ -263,4 +294,19 @@ class HomeViewController: UIViewController {
 
 
 
+}
+
+
+extension HomeViewController: RentModalDelegate {
+    func didRentKickboard(deviceId: String) {
+        mapService.removeMarker(for: deviceId)
+    }
+
+    func didReturnKickboard(deviceId: String) {
+        if let target = KickboardManager.shared.loadKickboards().first(where: { $0.deviceId == deviceId }) {
+            mapService.addKickboardMarkers([target], mapView: mapView) { [weak self] id in
+                self?.presentRentModal(for: id)
+            }
+        }
+    }
 }

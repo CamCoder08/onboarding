@@ -21,21 +21,20 @@ class KickboardManager {
 
     // 기본 킥보드 10대 저장
     func initializeDefaultKickboards() {
-        userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!) // 유저데이트 초기화 코드 ㄷㄷ
         let existing = userDefaults.integer(forKey: countKey)
         if existing > 0 { return } // 이미 저장돼 있으면 패스
 
         let defaultList: [KickboardModel] = [
-            KickboardModel(deviceId: "333098A", latitude: 37.579617, longitude: 126.974046, battery: 90),
-            KickboardModel(deviceId: "333012A", latitude: 37.579617, longitude: 126.974046, battery: 85),
-            KickboardModel(deviceId: "333287A", latitude: 37.579617, longitude: 126.976044, battery: 80),
-            KickboardModel(deviceId: "333044F", latitude: 37.579617, longitude: 126.975045, battery: 95),
-            KickboardModel(deviceId: "333567C", latitude: 37.579617, longitude: 126.974046, battery: 88),
-            KickboardModel(deviceId: "333484C", latitude: 37.579617, longitude: 126.973047, battery: 60),
-            KickboardModel(deviceId: "333882B", latitude: 37.579617, longitude: 126.972048, battery: 75),
-            KickboardModel(deviceId: "333765ED", latitude: 37.579617, longitude: 126.971049, battery: 65),
-            KickboardModel(deviceId: "333211E", latitude: 37.579617, longitude: 126.970050, battery: 92),
-            KickboardModel(deviceId: "333741F", latitude: 37.579617, longitude: 126.969051, battery: 70),
+            KickboardModel(deviceId: "333098A", latitude: 37.583331, longitude: 126.973546, battery: 90),
+            KickboardModel(deviceId: "333012A", latitude: 37.581770, longitude: 126.973626, battery: 85),
+            KickboardModel(deviceId: "333287A", latitude: 37.576271, longitude: 126.972529, battery: 80),
+            KickboardModel(deviceId: "333044F", latitude: 37.576512, longitude: 126.979560, battery: 95),
+            KickboardModel(deviceId: "333567C", latitude: 37.577675, longitude: 126.980577, battery: 88),
+            KickboardModel(deviceId: "333484C", latitude: 37.579796, longitude: 126.973047, battery: 60),
+            KickboardModel(deviceId: "333882B", latitude: 37.581145, longitude: 126.980309, battery: 75),
+            KickboardModel(deviceId: "333765ED", latitude: 37.582796, longitude: 126.980079, battery: 65),
+            KickboardModel(deviceId: "333211E", latitude: 37.583735, longitude: 126.977858, battery: 92),
+            KickboardModel(deviceId: "333741F", latitude: 37.581619, longitude: 126.971714, battery: 70),
         ]
 
         saveKickboards(defaultList)
@@ -50,6 +49,12 @@ class KickboardManager {
             userDefaults.set(item.longitude, forKey: longitudePrefix + "\(index)")
             userDefaults.set(item.battery, forKey: batteryPrefix + "\(index)")
         }
+    }
+
+    func addKickboard(_ new: KickboardModel) {
+        var current = loadKickboards()
+        current.append(new)
+        saveKickboards(current)
     }
 
     func loadKickboards() -> [KickboardModel] {
