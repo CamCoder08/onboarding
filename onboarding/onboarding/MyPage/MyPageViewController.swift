@@ -59,9 +59,9 @@ class MyPageViewController: UIViewController {
         logoImageView.contentMode = .scaleAspectFit
         
         introduceLabel.text = "onBoarding과 함께, 매일이 작은 여행이 됩니다"
-        introduceLabel.font = UIFont.systemFont(ofSize: 12)
+        introduceLabel.font = UIFont(name: "NotoSansKR-Thin", size: 10)
         
-        nicknameLable.font = UIFont.boldSystemFont(ofSize: 35)
+        nicknameLable.font = UIFont(name: "NotoSansKR-Light", size: 36)
         
         statusImageView.image = UIImage(named: "현재 이용 상태")
         statusImageView.contentMode = .scaleAspectFit
@@ -71,7 +71,7 @@ class MyPageViewController: UIViewController {
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
-        stackView.spacing = 38
+        stackView.spacing = 28
         
         historyButton.setImage(UIImage(named: "히스토리"), for: .normal)
         historyButton.contentMode = .scaleAspectFit
@@ -89,7 +89,7 @@ class MyPageViewController: UIViewController {
         
         logoutButton.setTitle("LOGOUT", for: .normal)
         logoutButton.setTitleColor(.black, for: .normal)
-        logoutButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        logoutButton.titleLabel?.font = UIFont(name: "Nunito-Bold", size: 18)
         logoutButton.layer.borderColor = UIColor.black.cgColor
         logoutButton.layer.borderWidth = 0.5
         logoutButton.layer.cornerRadius = 10
