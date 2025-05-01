@@ -14,11 +14,20 @@ class HistoryViewController: UIViewController {
     private let underlineView = UIView()
     private let tableView = UITableView()
     
+    var histories:[HistoryDisplayModel] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
         setupConstraints()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        histories = HistoryDisplayManager.manager.display()
+        tableView.reloadData()
+    }
+    
     
     private func configureUI() {
         view.backgroundColor = .white
@@ -30,7 +39,7 @@ class HistoryViewController: UIViewController {
         ].forEach { view.addSubview($0) }
         
         historyLabel.text = "History"
-        historyLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        historyLabel.font = UIFont(name: "Nunito-Semibold", size: 32)
         underlineView.backgroundColor = .black
         
         tableView.dataSource = self
@@ -65,7 +74,7 @@ class HistoryViewController: UIViewController {
 
 extension HistoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return histories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
