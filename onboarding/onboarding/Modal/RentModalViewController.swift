@@ -42,6 +42,7 @@ class RentModalViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        isModalInPresentation = true
         view.backgroundColor = .white
         view.layer.cornerRadius = 30
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]

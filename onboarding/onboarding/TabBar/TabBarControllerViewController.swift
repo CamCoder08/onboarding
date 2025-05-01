@@ -16,7 +16,7 @@ class TabBarController: UITabBarController {
         tabBar.tintColor = .white // 활성화된 탭 아이콘과 텍스트 색상
         tabBar.unselectedItemTintColor = .white // 비활성화된 탭 아이콘과 텍스트 색상
 
-        tabBar.backgroundColor = UIColor.gray.withAlphaComponent(0.9)
+        tabBar.backgroundColor = UIColor(red: 10/255, green: 10/255, blue: 10/255, alpha: 0.65)
 
     }
 
@@ -74,8 +74,10 @@ private class BrandViewController: UIViewController {
 
 class CustomTabBar: UITabBar {
     override func sizeThatFits(_ size: CGSize) -> CGSize {
+
         var sizeThatFits = super.sizeThatFits(size)
         sizeThatFits.height = 100
+
         return sizeThatFits
     }
 }

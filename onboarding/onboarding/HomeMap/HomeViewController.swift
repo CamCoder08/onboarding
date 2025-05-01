@@ -22,13 +22,40 @@ class HomeViewController: UIViewController, RegisterModalViewControllerDelegate 
 
     private let adressInputField: UITextField = {
         let textField = UITextField()
-        textField.textAlignment = .center
-        textField.backgroundColor = UIColor.darkGray.withAlphaComponent(0.3) // 한번에 배경+알파
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 25, height: 0))
+        textField.leftViewMode = .always
+//        textField.font = UIFont(name: "HelveticaNeue-Bold", size: 16)
+        textField.textColor = .white
+        textField.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.2)
         textField.layer.cornerRadius = 30
         textField.clipsToBounds = true
         textField.borderStyle = .roundedRect
         return textField
     }()
+
+    private let adressInputFieldShadow: UIView = {
+        let shadow = UIView()
+        shadow.layer.shadowColor = UIColor.black.cgColor
+        shadow.layer.shadowOpacity = 3
+        shadow.layer.shadowOffset = CGSize(width: 0, height: 9)
+        shadow.layer.shadowRadius = 6
+        shadow.backgroundColor = UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 0.4)
+        shadow.layer.cornerRadius = 30
+        shadow.layer.masksToBounds = false
+        return shadow
+    }()
+
+//    let adressInputShadow: UIView = {
+//        let shadow = UIView()
+//        shadow.backgroundColor = .clear
+//        shadow.layer.shadowColor = UIColor.black.cgColor
+//        shadow.layer.shadowOffset = CGSize(width: 0, height: 5)
+//        shadow.layer.shadowRadius = 2
+//        shadow.layer.shadowOpacity = 100
+//        shadow.layer.masksToBounds = false
+//
+//        return shadow
+//    }()
 
 
     private lazy var adressSearchButton: UIButton = {
@@ -41,7 +68,7 @@ class HomeViewController: UIViewController, RegisterModalViewControllerDelegate 
 
     private let moveToCurrentLocationBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.3)
+        view.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.1)
         view.layer.cornerRadius = 25
         view.clipsToBounds = true
         return view
@@ -55,14 +82,17 @@ class HomeViewController: UIViewController, RegisterModalViewControllerDelegate 
         return button
     }()
 
-    private let registerModeToggleButtonBackgroundView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.3)
-        view.layer.cornerRadius = 25
-        view.clipsToBounds = true
-        return view
+    private let moveToCurrentLocationButtonShadow: UIView = {
+        let shadow = UIView()
+        shadow.layer.shadowColor = UIColor.black.cgColor
+        shadow.layer.shadowOpacity = 3
+        shadow.layer.shadowOffset = CGSize(width: 0, height: 5)
+        shadow.layer.shadowRadius = 6
+        shadow.backgroundColor = UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 0.4)
+        shadow.layer.cornerRadius = 30
+        shadow.layer.masksToBounds = false
+        return shadow
     }()
-
 
     private lazy var registerModeToggleButton: UIButton = {
         let button = UIButton()
@@ -71,6 +101,28 @@ class HomeViewController: UIViewController, RegisterModalViewControllerDelegate 
         button.addTarget(self, action: #selector(didTapRegisterModeToggleButton), for: .touchUpInside)
         return button
     }()
+
+    private let registerModeToggleButtonBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.1)
+        view.layer.cornerRadius = 25
+        view.clipsToBounds = true
+        return view
+    }()
+
+
+    private let registerModeToggleButtonShadow: UIView = {
+        let shadow = UIView()
+        shadow.layer.shadowColor = UIColor.black.cgColor
+        shadow.layer.shadowOpacity = 3
+        shadow.layer.shadowOffset = CGSize(width: 0, height: 5)
+        shadow.layer.shadowRadius = 6
+        shadow.backgroundColor = UIColor(red: 194/255, green: 194/255, blue: 194/255, alpha: 0.4)
+        shadow.layer.cornerRadius = 30
+        shadow.layer.masksToBounds = false
+        return shadow
+    }()
+    
 
     // 중앙 고정 핀 이미지
     private let centerPinImageView: UIImageView = {
@@ -87,6 +139,7 @@ class HomeViewController: UIViewController, RegisterModalViewControllerDelegate 
         super.viewDidLoad()
         setupUI()
         setupCenterPinTap()
+        
 
         // 앱 시작할 때 경복궁 좌표로 지도 이동
         let seoulLatLng = NMGLatLng(lat: 37.579617, lng: 126.977041)
@@ -120,12 +173,47 @@ class HomeViewController: UIViewController, RegisterModalViewControllerDelegate 
     }
 
     private func setupUI() {
-        [mapView, adressInputField, adressSearchButton, moveToCurrentLocationBackgroundView,
-         moveToCurrentLocationButton,registerModeToggleButtonBackgroundView,
+
+
+//        adressInputFieldShadow
+
+        [mapView, adressInputFieldShadow, adressInputField, adressSearchButton, moveToCurrentLocationButtonShadow,
+         moveToCurrentLocationBackgroundView, moveToCurrentLocationButton,
+         registerModeToggleButtonShadow, registerModeToggleButtonBackgroundView,
          registerModeToggleButton, centerPinImageView].forEach { view.addSubview($0) }
 
         mapView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+
+//        textFieldWrapper.snp.makeConstraints { make in
+//            make.center.equalTo(adressInputField)
+//        }
+
+        // 그림자 뷰에 위치 설정
+//        adressInputShadow.snp.makeConstraints { make in
+//            make.top.equalToSuperview().offset(90)
+//            make.leading.trailing.equalToSuperview().inset(40)
+//            make.height.equalTo(60)
+//        }
+
+
+//        adressInputField.snp.makeConstraints { make in
+//            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 2, left: 0, bottom: 0, right: 0))
+//        }
+
+//        adressInputField.snp.makeConstraints { make in
+//            make.centerX.equalToSuperview()
+//            make.top.equalToSuperview().inset(100)
+//            make.width.equalTo()
+//        }
+
+        adressInputFieldShadow.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(80)
+            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().inset(40)
+            make.trailing.equalToSuperview().inset(40)
+            make.height.equalTo(60)
         }
 
         adressInputField.snp.makeConstraints { make in
@@ -154,6 +242,10 @@ class HomeViewController: UIViewController, RegisterModalViewControllerDelegate 
             make.width.height.equalTo(50)
         }
 
+        moveToCurrentLocationButtonShadow.snp.makeConstraints { make in
+            make.edges.equalTo(moveToCurrentLocationBackgroundView)
+        }
+
         registerModeToggleButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-36.5)
             make.bottom.equalTo(moveToCurrentLocationButton.snp.top).offset(-20)
@@ -164,6 +256,10 @@ class HomeViewController: UIViewController, RegisterModalViewControllerDelegate 
             make.trailing.equalToSuperview().offset(-37.5)
             make.bottom.equalTo(moveToCurrentLocationButton.snp.top).offset(-21)
             make.width.height.equalTo(50)
+        }
+
+        registerModeToggleButtonShadow.snp.makeConstraints { make in
+            make.edges.equalTo(registerModeToggleButtonBackgroundView)
         }
 
         centerPinImageView.snp.makeConstraints { make in

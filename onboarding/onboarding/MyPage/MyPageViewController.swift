@@ -124,7 +124,7 @@ class MyPageViewController: UIViewController {
         scrollView.snp.makeConstraints {
             $0.top.equalTo(nicknameLable.snp.bottom).offset(39)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview().offset(-72)
+            $0.bottom.equalToSuperview().offset(-100)
         }
         
         stackView.snp.makeConstraints {
