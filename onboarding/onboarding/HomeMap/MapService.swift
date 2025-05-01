@@ -16,6 +16,9 @@ class MapService {
         list.forEach { model in
             let marker = NMFMarker()
             marker.position = NMGLatLng(lat: model.latitude, lng: model.longitude)
+            marker.iconImage = NMFOverlayImage(name: "마커 핑크")
+            marker.width = 40
+            marker.height = 40
             marker.mapView = mapView
 
             print("마커 추가됨:", model.deviceId, model.latitude, model.longitude) // 디버깅용
