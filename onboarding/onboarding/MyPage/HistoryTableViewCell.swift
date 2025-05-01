@@ -51,7 +51,8 @@ class HistoryTableViewCell: UITableViewCell {
         }
         
         codeLabel.snp.makeConstraints {
-            $0.top.leading.equalToSuperview().offset(12)
+            $0.top.equalToSuperview().offset(12)
+            $0.leading.equalToSuperview().offset(18)
         }
         
         dateLabel.snp.makeConstraints {

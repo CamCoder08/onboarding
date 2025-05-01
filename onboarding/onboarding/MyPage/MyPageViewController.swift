@@ -55,7 +55,7 @@ class MyPageViewController: UIViewController {
             logoutButton
         ].forEach { stackView.addArrangedSubview($0) }
         
-        logoImageView.image = UIImage(named: "MypageLogo")
+        logoImageView.image = UIImage(named: "logo")
         logoImageView.contentMode = .scaleAspectFit
         
         introduceLabel.text = "onBoarding과 함께, 매일이 작은 여행이 됩니다"
@@ -98,7 +98,7 @@ class MyPageViewController: UIViewController {
     
     private func setupConstraints() {
         logoImageView.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(76)
+            $0.top.equalToSuperview().offset(100)
             $0.leading.equalToSuperview().offset(31)
             $0.width.equalTo(138)
             $0.height.equalTo(34)
@@ -117,8 +117,8 @@ class MyPageViewController: UIViewController {
         statusImageView.snp.makeConstraints {
             $0.bottom.equalTo(nicknameLable.snp.bottom).offset(4)
             $0.trailing.equalToSuperview().offset(-41)
-            $0.width.equalTo(64)
-            $0.height.equalTo(36)
+            $0.width.equalTo(69)
+            $0.height.equalTo(39)
         }
         
         scrollView.snp.makeConstraints {
@@ -133,6 +133,7 @@ class MyPageViewController: UIViewController {
         
         historyButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(30)
+            $0.leading.equalToSuperview().offset(6)
             $0.height.equalTo(150)
             $0.width.equalTo(332)
         }
@@ -143,6 +144,7 @@ class MyPageViewController: UIViewController {
         }
         
         TeamBannerImageView.snp.makeConstraints {
+            $0.top.equalTo(registerationButton.snp.bottom).offset(18)
             $0.height.equalTo(150)
             $0.width.equalTo(332)
         }
