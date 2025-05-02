@@ -85,10 +85,10 @@ class RegisterModalViewController: UIViewController {
         
         deviceNumber.text = "Device No."
         deviceNumber.textColor = UIColor(red: 0.04, green: 0.04, blue: 0.04, alpha: 1.0)
-        deviceNumber.font =  UIFont(name: "NotoSansKR-Light", size: 13)
+        deviceNumber.font =  UIFont(name: "NotoSansKR-Light", size: 16)
         deviceNumber.textAlignment = .center
         deviceNumber.snp.makeConstraints {
-            $0.top.equalTo(textLabel.snp.bottom).offset(-10)
+            $0.top.equalTo(textLabel.snp.bottom).offset(10)
             $0.centerX.equalToSuperview()
         }
         

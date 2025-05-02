@@ -127,7 +127,7 @@ class HomeViewController: UIViewController, RegisterModalViewControllerDelegate 
     // 중앙 고정 핀 이미지
     private let centerPinImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "pin.fill") // 나중에 커스텀
+        imageView.image = UIImage(named: "ADD")
         imageView.tintColor = .purple
         imageView.contentMode = .scaleAspectFit
         imageView.isHidden = true // 처음에는 숨겨놓기
