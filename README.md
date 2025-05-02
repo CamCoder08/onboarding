@@ -12,6 +12,8 @@ onBoard는 iOS 부트캠프 팀 프로젝트로 제작된 **킥보드 등록 및
 
 > 본 프로젝트는 스토리보드를 사용하지 않고, **모든 화면을 코드와 SnapKit으로 구성**했습니다.
 
+시연 영상 링크 : https://youtube.com/shorts/9NLumrFGpqg?feature=share
+
 <img width="1431" alt="스크린샷 2025-05-02 11 51 05" src="https://github.com/user-attachments/assets/d2e5d4c2-03c2-4ef6-8f0b-ac84fa37eff5" />
 
 ---
