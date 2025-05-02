@@ -16,7 +16,7 @@ class MapService {
         list.forEach { model in
             let marker = NMFMarker()
             marker.position = NMGLatLng(lat: model.latitude, lng: model.longitude)
-            marker.iconImage = NMFOverlayImage(name: "마커 핑크")
+            marker.iconImage = NMFOverlayImage(name: "marker_pink")
             marker.width = 40
             marker.height = 40
             marker.mapView = mapView

@@ -106,7 +106,7 @@ class RentModalViewController: UIViewController {
             $0.trailing.equalToSuperview().offset(193)
         }
         
-        boardImg.image = UIImage(named: "대여시작")
+        boardImg.image = UIImage(named: "rent_start")
         boardImg.snp.makeConstraints {
             $0.height.equalTo(75)
             $0.width.equalTo(78)
@@ -240,7 +240,7 @@ class RentModalViewController: UIViewController {
             }
 
             
-            boardImg.image = UIImage(named: "대여중")
+            boardImg.image = UIImage(named: "rent_active")
             rentTitle.text = "onBoarding ..."
             batteryPercent.text = "80%"
             
@@ -269,7 +269,7 @@ class RentModalViewController: UIViewController {
                 HistoryDisplayManager.manager.save(history: history)
             }
 
-            boardImg.image = UIImage(named: "대여시작")
+            boardImg.image = UIImage(named: "rent_start")
             rentTitle.text = "onBoard"
             batteryPercent.text = "100%"
             

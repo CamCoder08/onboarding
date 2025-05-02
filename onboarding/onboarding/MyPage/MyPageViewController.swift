@@ -63,7 +63,7 @@ class MyPageViewController: UIViewController {
         
         nicknameLable.font = UIFont(name: "NotoSansKR-Light", size: 36)
         
-        statusImageView.image = UIImage(named: "현재 이용 상태")
+        statusImageView.image = UIImage(named: "current_usage_state")
         statusImageView.contentMode = .scaleAspectFit
         
         scrollView.backgroundColor = .white
@@ -73,17 +73,17 @@ class MyPageViewController: UIViewController {
         stackView.distribution = .fill
         stackView.spacing = 28
         
-        historyButton.setImage(UIImage(named: "히스토리"), for: .normal)
+        historyButton.setImage(UIImage(named: "history_icon"), for: .normal)
         historyButton.contentMode = .scaleAspectFit
         historyButton.clipsToBounds = true
         historyButton.addTarget(self, action: #selector(historyTapped), for: .touchUpInside)
         
-        registerationButton.setImage(UIImage(named: "등록"), for: .normal)
+        registerationButton.setImage(UIImage(named: "register_icon"), for: .normal)
         registerationButton.contentMode = .scaleAspectFit
         registerationButton.clipsToBounds = true
         registerationButton.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
         
-        TeamBannerImageView.image = UIImage(named: "이벤트2")
+        TeamBannerImageView.image = UIImage(named: "event_promotion")
         TeamBannerImageView.contentMode = .scaleAspectFit
         TeamBannerImageView.clipsToBounds = true
         
